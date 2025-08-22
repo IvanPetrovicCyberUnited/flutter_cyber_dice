@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>3D Dice Roller</title>
+  <style>
+    html, body { margin: 0; padding: 0; overflow: hidden; background: #222; }
+    #dice-canvas { width: 100vw; height: 100vh; display: block; }
+    #overlay { position: absolute; top: 0; left: 0; width: 100vw; height: 100vh; pointer-events: none; }
+  </style>
+</head>
+<body>
+  <canvas id="dice-canvas"></canvas>
+  <div id="overlay"></div>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.155.0/build/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/cannon-es@0.20.0/dist/cannon-es.js"></script>
+  <script src="dice_roller_postmsg.js"></script>
+  <script>
+    // --- 3D Dice Roller using Three.js and Cannon-es ---
+    const canvas = document.getElementById('dice-canvas');
+    const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
+    renderer.setClearColor(0x222222);
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+    camera.position.set(0, 20, 32);
+    camera.lookAt(0, 0, 0);
+    // Table
+    const tableGeo = new THREE.BoxGeometry(30, 1, 30);
+    const tableMat = new THREE.MeshPhongMaterial({ color: 0x3e2723 });
+    const table = new THREE.Mesh(tableGeo, tableMat);
+    table.position.y = -1;
+    scene.add(table);
+    // Lighting
+    scene.add(new THREE.AmbientLight(0xffffff, 0.5));
+    const dirLight = new THREE.DirectionalLight(0xffffff, 0.8);
+    dirLight.position.set(10, 30, 20);
+    scene.add(dirLight);
+    // Physics world
+    const world = new CANNON.World({ gravity: new CANNON.Vec3(0, -30, 0) });
+    const tableBody = new CANNON.Body({ mass: 0, shape: new CANNON.Box(new CANNON.Vec3(15, 0.5, 15)), position: new CANNON.Vec3(0, -1, 0) });
+    world.addBody(tableBody);
+    // Dice
+    let dice = [];
+    function createDie() {
+      // Geometry
+      const geo = new THREE.BoxGeometry(2, 2, 2);
+      const loader = new THREE.TextureLoader();
+      const faces = [1,2,3,4,5,6].map(i => loader.load('dice/dice'+i+'.png'));
+      const mats = faces.map(t => new THREE.MeshPhongMaterial({ map: t }));
+      const mesh = new THREE.Mesh(geo, mats);
+      scene.add(mesh);
+      // Physics
+      const shape = new CANNON.Box(new CANNON.Vec3(1,1,1));
+      const body = new CANNON.Body({ mass: 1, shape });
+      body.position.set(Math.random()*10-5, 10+Math.random()*5, Math.random()*10-5);
+      body.angularVelocity.set(Math.random()*10, Math.random()*10, Math.random()*10);
+      body.velocity.set(Math.random()*10-5, 0, Math.random()*10-5);
+      world.addBody(body);
+      return { mesh, body };
+    }
+    function throwDice(count) {
+      // Remove old dice
+      dice.forEach(d => { scene.remove(d.mesh); world.removeBody(d.body); });
+      dice = [];
+      for(let i=0; i<count; ++i) dice.push(createDie());
+    }
+    // Animate
+    function animate() {
+      requestAnimationFrame(animate);
+      world.fixedStep();
+      dice.forEach(d => {
+        d.mesh.position.copy(d.body.position);
+        d.mesh.quaternion.copy(d.body.quaternion);
+      });
+      renderer.render(scene, camera);
+    }
+    animate();
+    // Expose throwDice to parent
+    window.throwDice = throwDice;
+  </script>
+</body>
+</html>
