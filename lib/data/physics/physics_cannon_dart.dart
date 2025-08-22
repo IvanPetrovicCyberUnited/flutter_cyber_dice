@@ -101,11 +101,9 @@ class CannonDartPhysicsService implements PhysicsService {
     };
     double best = -double.infinity;
     int top = 1;
-    final rot = Matrix3.identity();
-    b.rotation.toRotationMatrix(rot);
     final up = Vector3(0, 1, 0);
     faces.forEach((num, normal) {
-      final world = rot.transformed(normal);
+      final world = b.rotation.rotated(normal);
       final d = world.dot(up);
       if (d > best) {
         best = d;

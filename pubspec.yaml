@@ -6,10 +6,9 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  flutter_gl: ^0.0.22
+  flutter_gl: ^0.0.21
   three_dart: ^0.0.1
   vector_math: ^2.1.4
-  cannon_physics: ^0.1.0
   js: ^0.6.7
   web: ^0.5.1
   provider: ^6.1.2
