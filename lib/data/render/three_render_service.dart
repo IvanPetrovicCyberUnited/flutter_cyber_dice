@@ -1,4 +1,5 @@
 import 'dart:html';
+import 'dart:math' as math;
 import 'package:flutter_gl/flutter_gl.dart';
 import 'package:three_dart/three_dart.dart' as three;
 import 'package:vector_math/vector_math_64.dart';
@@ -38,7 +39,7 @@ class ThreeRenderService implements RenderService {
   String addGroundMesh(double size) {
     final geo = three.PlaneGeometry(size, size);
     final mat = three.MeshStandardMaterial({'color': 0x888888});
-    final mesh = three.Mesh(geo, mat)..rotation.x = -three.Math.PI / 2;
+    final mesh = three.Mesh(geo, mat)..rotation.x = -math.pi / 2;
     _scene.add(mesh);
     final id = (++_id).toString();
     _meshes[id] = mesh;
@@ -50,7 +51,8 @@ class ThreeRenderService implements RenderService {
     final geo = three.BoxGeometry(size, size, size);
     late three.MeshStandardMaterial mat;
     if (textureAsset != null) {
-      final tex = three.TextureLoader().load(textureAsset);
+      final loader = three.TextureLoader(null);
+      final tex = loader.load(textureAsset, (three.Texture texture) {});
       mat = three.MeshStandardMaterial({'map': tex});
     } else {
       mat = three.MeshStandardMaterial({'color': 0xffffff});
