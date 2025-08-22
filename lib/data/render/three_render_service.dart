@@ -22,15 +22,16 @@ class ThreeRenderService implements RenderService {
     });
     _scene = three.Scene();
     _camera = three.PerspectiveCamera(
-        55, host.clientWidth / host.clientHeight, 0.1, 1000)
-      ..position.setValues(0, 6, 10);
+        55.0, host.clientWidth / host.clientHeight, 0.1, 1000.0)
+      ..position.set(0.0, 6.0, 10.0);
     final hemi = three.HemisphereLight(three.Color(0xffffff), three.Color(0x444444), 0.6);
     _scene.add(hemi);
     final dir = three.DirectionalLight(three.Color(0xffffff), 0.8)
-      ..position.setValues(5, 10, 7);
+      ..position.set(5.0, 10.0, 7.0);
     _scene.add(dir);
     _renderer = three.WebGLRenderer({'canvas': _gl.element});
-    _renderer.setSize(host.clientWidth, host.clientHeight);
+    _renderer.setSize(
+        host.clientWidth.toDouble(), host.clientHeight.toDouble());
   }
 
   @override
@@ -64,7 +65,7 @@ class ThreeRenderService implements RenderService {
   @override
   void sync(String meshId, Vector3 pos, Quaternion rot) {
     final mesh = _meshes[meshId];
-    mesh?.position.setValues(pos.x, pos.y, pos.z);
+    mesh?.position.set(pos.x, pos.y, pos.z);
     mesh?.quaternion.set(rot.x, rot.y, rot.z, rot.w);
   }
 
