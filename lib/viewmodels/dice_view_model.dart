@@ -4,6 +4,8 @@ import 'package:vector_math/vector_math_64.dart';
 import '../domain/services/physics_service.dart';
 import '../domain/services/render_service.dart';
 import '../core/utils/fps_counter.dart';
+import '../sound_effects.dart';
+
 
 class DiceViewModel extends ChangeNotifier {
   final PhysicsService physics;
@@ -36,6 +38,8 @@ class DiceViewModel extends ChangeNotifier {
     result2 = null;
     physics.randomizeDice(dice1Body, xBias: -1.2);
     physics.randomizeDice(dice2Body, xBias: 1.2);
+    SoundEffects.playStandard();
+
     running = true;
     notifyListeners();
   }
