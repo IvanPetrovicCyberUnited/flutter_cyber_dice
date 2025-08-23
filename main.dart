@@ -6,6 +6,7 @@ import 'package:flutter_dice_3d/ui/app.dart';
 import 'package:flutter_dice_3d/viewmodels/dice_view_model.dart';
 import 'package:flutter_dice_3d/core/di/locator.dart';
 
+
 void main() {
   ui.platformViewRegistry.registerViewFactory('three-canvas', (int viewId) {
     final div = DivElement()

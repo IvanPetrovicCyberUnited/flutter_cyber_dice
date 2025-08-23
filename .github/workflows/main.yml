@@ -1,0 +1,33 @@
+name: Flutter Web Build
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.22.1' # Oder deine verwendete Version
+          channel: 'stable'
+
+      - name: Flutter Clean
+        run: flutter clean
+        working-directory: flutter_cyber_dice
+
+      - name: Get Dependencies
+        run: flutter pub get
+        working-directory: flutter_cyber_dice
+
+      - name: Build Flutter Web App
+        run: flutter build web
+        working-directory: flutter_cyber_dice

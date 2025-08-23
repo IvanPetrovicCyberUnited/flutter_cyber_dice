@@ -6,6 +6,7 @@ import '../domain/services/render_service.dart';
 import '../core/utils/fps_counter.dart';
 import '../sound_effects.dart';
 
+
 class DiceViewModel extends ChangeNotifier {
   final PhysicsService physics;
   final RenderService render;
@@ -38,6 +39,7 @@ class DiceViewModel extends ChangeNotifier {
     physics.randomizeDice(dice1Body, xBias: -1.2);
     physics.randomizeDice(dice2Body, xBias: 1.2);
     SoundEffects.playStandard();
+
     running = true;
     notifyListeners();
   }
